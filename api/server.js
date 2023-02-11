@@ -20,6 +20,16 @@ app.get('/healthcheck', (req, res) => {
 app.use('/auth', authRoutes);
 app.use('/books', bookRoutes);
 
+//errors
+app.use((err, req, res, next) => {
+  if (err instanceof mongoose.Error.ValidationError) {
+    console.log(err.message);
+    return res.status(400).json(err);
+  }
+
+  return res.status(500).send('Something went wrong, please try again later');
+});
+
 //404
 app.all('*', (req, res) => {
   res.status(404).send('404, route not found! 😟');
