@@ -27,7 +27,14 @@ app.use(errorHandler);
 
 //404
 app.all('*', (req, res) => {
-  res.status(404).send('404, route not found! 😟');
+  const { format = 'json' } = req.query;
+
+  switch (format) {
+    case 'html':
+      return res.type('html').sendFile('static/404.html', { root: __dirname });
+    default:
+      return res.type('json').status(404).send('404, route not found! 😟');
+  }
 });
 
 //Connect to the database and run API

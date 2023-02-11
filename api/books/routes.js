@@ -3,15 +3,13 @@ const express = require('express');
 const router = express.Router();
 const expressAsyncHandler = require('express-async-handler');
 const Book = require('./book');
-const mongoose = require('mongoose');
+const bookView = require('./book.views');
+const getAllBooksRequest = require('./get-all-books-request.v1');
+const getBookRequest = require('./get-book-request');
 
-router.get('/', (req, res) => {
-  res.status(200).send('Route not implemented yet');
-});
+router.get('/', getAllBooksRequest);
 
-router.get('/:id', (req, res) => {
-  res.status(200).send('Route not implemented yet');
-});
+router.get('/:id', getBookRequest, bookView);
 
 router.post(
   '/',
