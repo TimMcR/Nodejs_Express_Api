@@ -14,7 +14,7 @@ const bookSchema = new Schema(
   {
     title: {
       type: String,
-      required: [true, 'Title is required'],
+      required: true,
       unique: true,
       minLength: TITLE_MIN_LENGTH,
       maxLength: TITLE_MAX_LENGTH,
