@@ -9,9 +9,9 @@ const createBookRequest = expressAsyncHandler(async (req, res) => {
 
   if (!book) throw Error(`Error creating ${title}`);
 
-  const { format = 'json' } = req.query;
+  req.data = book;
 
-  return res.status(201).send(BookView(book, format));
+  next();
 });
 
 module.exports = createBookRequest;

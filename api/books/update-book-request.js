@@ -21,9 +21,9 @@ const updateBookRequest = expressAsyncHandler(async (req, res) => {
     });
   }
 
-  const { format } = req.query;
+  req.data = book;
 
-  return res.status(200).send(BookView(book, format));
+  next();
 });
 
 module.exports = updateBookRequest;

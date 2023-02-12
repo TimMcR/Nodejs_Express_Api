@@ -1,13 +1,12 @@
 const expressAsyncHandler = require('express-async-handler');
-const BooksView = require('../views/books.view');
 const Book = require('./book');
 
-const getAllBooksRequest = expressAsyncHandler(async (req, res) => {
+const getAllBooksRequest = expressAsyncHandler(async (req, res, next) => {
   const books = await Book.find({});
 
-  const { format = 'json' } = req.query;
+  req.data = books;
 
-  return res.status(200).send(BooksView(books, format));
+  next();
 });
 
 module.exports = getAllBooksRequest;

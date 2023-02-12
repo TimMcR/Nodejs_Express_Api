@@ -1,8 +1,9 @@
 const expressAsyncHandler = require('express-async-handler');
 const BookView = require('../views/book.view');
 const Book = require('./book');
+const mongoose = require('mongoose');
 
-const getBookRequest = expressAsyncHandler(async (req, res) => {
+const getBookRequest = expressAsyncHandler(async (req, res, next) => {
   const { id } = req.params;
 
   const book = await Book.findById(id);
@@ -14,9 +15,9 @@ const getBookRequest = expressAsyncHandler(async (req, res) => {
     });
   }
 
-  const { format = 'json' } = req.query;
+  req.data = book;
 
-  return res.status(200).send(BookView(book, format));
+  next();
 });
 
 module.exports = getBookRequest;
