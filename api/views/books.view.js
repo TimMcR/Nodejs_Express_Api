@@ -1,13 +1,16 @@
-const expressAsyncHandler = require('express-async-handler');
+const formatTypes = require('../config/formatTypes');
 
-const BooksView = expressAsyncHandler((req, res) => {
-  const { format = 'json' } = req.query;
+const ViewFormats = [
+  formatTypes.json,
+  formatTypes.text,
+  formatTypes.html,
+  formatTypes.xml,
+];
 
-  const books = req.data;
-
+const BooksView = (books, format) => {
   switch (format) {
-    case 'json':
-      return res.status(200).json({
+    case formatTypes.json:
+      return {
         data: books.map((book) => {
           const { title, author, description, _id: id } = book;
           return {
@@ -22,20 +25,19 @@ const BooksView = expressAsyncHandler((req, res) => {
             },
           };
         }),
-      });
-    case 'text':
-      return res.status(200).send(
-        books
-          .map((book, index) => {
-            const { title, author, description, _id: id } = book;
-            return `Title #${
-              index + 1
-            }: ${title}. By ${author}. Description: ${description}. ID: ${id}`;
-          })
-          .toString(),
-      );
-    case 'html':
-      return res.status(200).type('html').send(`
+      };
+    case formatTypes.text:
+      return books
+        .map((book, index) => {
+          const { title, author, description, _id: id } = book;
+          return `Title #${
+            index + 1
+          }: ${title}. By ${author}. Description: ${description}. ID: ${id}`;
+        })
+        .toString();
+
+    case formatTypes.html:
+      return `
           <div>
             <ul>
               ${books
@@ -54,10 +56,9 @@ const BooksView = expressAsyncHandler((req, res) => {
                 })
                 .join('')}
           </ul>
-          </div>`);
-    case 'xml':
-      return res.status(200).type('xml')
-        .send(`<?xml version="1.0" encoding="UTF-8"?>
+          </div>`;
+    case formatTypes.xml:
+      return `<?xml version="1.0" encoding="UTF-8"?>
           <booklist>
             ${books.map((book) => {
               const { title, author, description, _id: id } = book;
@@ -68,12 +69,8 @@ const BooksView = expressAsyncHandler((req, res) => {
                 <id>${id}</id>
               </book>`;
             })}
-          </booklist>`);
-    default:
-      return res
-        .status(400)
-        .send(`Format type '${format}' is not supported for this request`);
+        </booklist>`;
   }
-});
+};
 
-module.exports = BooksView;
+module.exports = { BooksView, ViewFormats };

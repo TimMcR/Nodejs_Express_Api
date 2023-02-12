@@ -1,13 +1,19 @@
 const expressAsyncHandler = require('express-async-handler');
+const formatTypes = require('../config/formatTypes');
 
-const BookView = expressAsyncHandler((req, res) => {
-  const { format = 'json' } = req.query;
+const ViewFormats = [
+  formatTypes.json,
+  formatTypes.text,
+  formatTypes.html,
+  formatTypes.xml,
+];
 
-  const { title, author, description, _id: id } = req.data;
+const BookView = (book, format) => {
+  const { title, author, description, _id: id } = book;
 
   switch (format) {
-    case 'json':
-      return res.status(200).json({
+    case formatTypes.json:
+      return {
         data: {
           title,
           author,
@@ -19,16 +25,11 @@ const BookView = expressAsyncHandler((req, res) => {
             type: 'GET',
           },
         },
-      });
-    case 'text':
-      return res
-        .status(200)
-        .type('text')
-        .send(
-          `Title: ${title}, By: ${author}. Description: ${description}. ID: ${id}`,
-        );
-    case 'html':
-      return res.status(200).type('html').send(`<div>
+      };
+    case formatTypes.text:
+      return `Title: ${title}, By: ${author}. Description: ${description}. ID: ${id}`;
+    case formatTypes.html:
+      return `<div>
           <h1>${title}</h1>
           <h2>By ${author}</h2>
           <h3>Description: </h3>
@@ -37,22 +38,16 @@ const BookView = expressAsyncHandler((req, res) => {
           <a href="http://localhost:4000/books?format=html">
             Back to Book Listing           
           </a>
-        </div>
-    `);
-    case 'xml':
-      return res.status(200).type('xml')
-        .send(`<?xml version="1.0" encoding="UTF-8"?>
+        </div> `;
+    case formatTypes.xml:
+      return `<?xml version="1.0" encoding="UTF-8"?>
           <book>
             <title>${title}</title>
             <author>${author}</author>
             <description>${description}</description>
             <id>${id}</id>
-          </book>`);
-    default:
-      return res
-        .status(400)
-        .send(`Format Type '${format}' is not supported for this request`);
+          </book>`;
   }
-});
+};
 
-module.exports = BookView;
+module.exports = { BookView, ViewFormats };

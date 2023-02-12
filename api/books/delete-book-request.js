@@ -1,9 +1,15 @@
 const expressAsyncHandler = require('express-async-handler');
-const BookView = require('../views/book.view');
+const { BookView, ViewFormats } = require('../views/book.view');
 const Book = require('./book');
 const mongoose = require('mongoose');
+const formatTypes = require('../config/formatTypes');
 
-const deleteBookRequest = expressAsyncHandler(async (req, res, next) => {
+const deleteBookRequest = expressAsyncHandler(async (req, res) => {
+  const { format = formatTypes.json } = req.query;
+
+  //TODO extract this to custom error for errorHandler
+  if (!ViewFormats.includes(format)) throw Error('Format type not supported');
+
   const { id } = req.params;
 
   const book = await Book.findByIdAndDelete(id);
@@ -15,9 +21,7 @@ const deleteBookRequest = expressAsyncHandler(async (req, res, next) => {
     });
   }
 
-  req.data = book;
-
-  next();
+  return res.status(200).type(format).send(BookView(book, format));
 });
 
 module.exports = deleteBookRequest;
