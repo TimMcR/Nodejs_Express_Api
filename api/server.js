@@ -31,7 +31,10 @@ app.all('*', (req, res) => {
 
   switch (format) {
     case 'html':
-      return res.type('html').sendFile('static/404.html', { root: __dirname });
+      return res
+        .type('html')
+        .status(404)
+        .sendFile('static/404.html', { root: __dirname });
     default:
       return res.type('json').status(404).send('404, route not found! 😟');
   }

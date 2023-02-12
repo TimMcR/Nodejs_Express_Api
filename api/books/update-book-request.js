@@ -1,11 +1,18 @@
 const expressAsyncHandler = require('express-async-handler');
 const BookView = require('../views/book.view');
 const Book = require('./book');
+const mongoose = require('mongoose');
 
-const getBookRequest = expressAsyncHandler(async (req, res) => {
+const updateBookRequest = expressAsyncHandler(async (req, res) => {
   const { id } = req.params;
 
-  const book = await Book.findById(id);
+  const { title, author, description } = req.body;
+
+  const book = await Book.findByIdAndUpdate(
+    id,
+    { title, author, description },
+    { new: true },
+  );
 
   if (!book) {
     const errors = new mongoose.Error.DocumentNotFoundError('Book Not Found');
@@ -14,9 +21,9 @@ const getBookRequest = expressAsyncHandler(async (req, res) => {
     });
   }
 
-  const { format = 'json' } = req.query;
+  const { format } = req.query;
 
   return res.status(200).send(BookView(book, format));
 });
 
-module.exports = getBookRequest;
+module.exports = updateBookRequest;

@@ -1,33 +1,19 @@
-require('colors');
 const express = require('express');
 const router = express.Router();
-const expressAsyncHandler = require('express-async-handler');
-const Book = require('./book');
-const bookView = require('./book.views');
-const getAllBooksRequest = require('./get-all-books-request.v1');
+const createBookRequest = require('./create-book-request');
+const deleteBookRequest = require('./delete-book-request');
+const getAllBooksRequest = require('./get-all-books-request');
 const getBookRequest = require('./get-book-request');
+const updateBookRequest = require('./update-book-request');
 
 router.get('/', getAllBooksRequest);
 
-router.get('/:id', getBookRequest, bookView);
+router.get('/:id', getBookRequest);
 
-router.post(
-  '/',
-  expressAsyncHandler(async (req, res) => {
-    const { title, author, description } = req.body;
+router.post('/', createBookRequest);
 
-    await Book.create({ title, author, description });
+router.put('/:id', updateBookRequest);
 
-    return res.status(201).send(`${title} added.`);
-  }),
-);
-
-router.put('/:id', (req, res) => {
-  res.status(200).send('Route not implemented yet');
-});
-
-router.delete('/:id', (req, res) => {
-  res.status(200).send('Route not implemented yet');
-});
+router.delete('/:id', deleteBookRequest);
 
 module.exports = router;

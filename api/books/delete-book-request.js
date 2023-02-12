@@ -1,11 +1,12 @@
 const expressAsyncHandler = require('express-async-handler');
 const BookView = require('../views/book.view');
 const Book = require('./book');
+const mongoose = require('mongoose');
 
-const getBookRequest = expressAsyncHandler(async (req, res) => {
+const deleteBookRequest = expressAsyncHandler(async (req, res) => {
   const { id } = req.params;
 
-  const book = await Book.findById(id);
+  const book = await Book.findByIdAndDelete(id);
 
   if (!book) {
     const errors = new mongoose.Error.DocumentNotFoundError('Book Not Found');
@@ -19,4 +20,4 @@ const getBookRequest = expressAsyncHandler(async (req, res) => {
   return res.status(200).send(BookView(book, format));
 });
 
-module.exports = getBookRequest;
+module.exports = deleteBookRequest;
