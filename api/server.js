@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 
 const authRoutes = require('./auth/routes');
 const bookRoutes = require('./books/routes');
+const adminRoutes = require('./admin/routes');
 
 const errorHandler = require('./middleware/errorHandler');
 
@@ -21,6 +22,7 @@ app.get('/healthcheck', (req, res) => {
 //routes
 app.use('/auth', authRoutes);
 app.use('/books', bookRoutes);
+app.use('/admin/books', adminRoutes);
 
 //errors
 app.use(errorHandler);

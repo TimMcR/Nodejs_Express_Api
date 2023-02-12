@@ -29,14 +29,23 @@ const BookView = (book, format) => {
       return `Title: ${title}, By: ${author}. Description: ${description}. ID: ${id}`;
     case formatTypes.html:
       return `<div>
-          <h1>${title}</h1>
-          <h2>By ${author}</h2>
-          <h3>Description: </h3>
-          <p>${description}</p>
-          <p>Id: ${id}</p>
-          <a href="http://localhost:4000/books?format=html">
-            Back to Book Listing           
-          </a>
+          <h1>Edit ${title}</h1>
+          <h3>Id: ${id}</h3>
+          <form
+            action="http://localhost:4000/admin/books/${id}?format=html" 
+            method="PUT"
+          >
+          <label for="title">Title</label>
+            <input name="title" id="title" value="${title}">
+            <div>
+              <input
+                type="button"
+                onclick="location.href='http://localhost:4000/admin/books?format=html'"
+                value="Cancel"
+              />
+              <input type="Submit" value="Update"/>
+            </div>
+          </form>
         </div> `;
     case formatTypes.xml:
       return `<?xml version="1.0" encoding="UTF-8"?>
