@@ -3,7 +3,7 @@ const BookView = require('../views/book.view');
 const Book = require('./book');
 const mongoose = require('mongoose');
 
-const updateBookRequest = expressAsyncHandler(async (req, res) => {
+const updateBookRequest = expressAsyncHandler(async (req, res, next) => {
   const { id } = req.params;
 
   const { title, author, description } = req.body;
