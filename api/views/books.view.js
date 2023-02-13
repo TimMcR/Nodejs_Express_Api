@@ -1,43 +1,40 @@
 const formatTypes = require('../config/formatTypes');
+const ViewBuilder = require('./ViewFactory');
 
-const ViewFormats = [
-  formatTypes.json,
-  formatTypes.text,
-  formatTypes.html,
-  formatTypes.xml,
-];
+const BooksView = new ViewBuilder();
 
-const BooksView = (books, format) => {
-  switch (format) {
-    case formatTypes.json:
+BooksView.addView(formatTypes.json, (books) => {
+  return {
+    data: books.map((book) => {
+      const { title, author, description, _id: id } = book;
       return {
-        data: books.map((book) => {
-          const { title, author, description, _id: id } = book;
-          return {
-            title,
-            author,
-            description,
-            id,
-            links: {
-              href: `/books/${id}`,
-              ref: `books`,
-              type: 'GET',
-            },
-          };
-        }),
+        title,
+        author,
+        description,
+        id,
+        links: {
+          href: `/books/${id}`,
+          ref: `books`,
+          type: 'GET',
+        },
       };
-    case formatTypes.text:
-      return books
-        .map((book, index) => {
-          const { title, author, description, _id: id } = book;
-          return `Title #${
-            index + 1
-          }: ${title}. By ${author}. Description: ${description}. ID: ${id}`;
-        })
-        .toString();
+    }),
+  };
+});
 
-    case formatTypes.html:
-      return `
+BooksView.addView(formatTypes.text, (books) => {
+  return books
+    .map((book, index) => {
+      const { title, author, description, _id: id } = book;
+      return `Title #${
+        index + 1
+      }: ${title}. By ${author}. Description: ${description}. ID: ${id}`;
+    })
+    .toString();
+});
+
+BooksView.addView(formatTypes.html, (books) => {
+  return `
           <div>
             <ul>
               ${books
@@ -57,8 +54,10 @@ const BooksView = (books, format) => {
                 .join('')}
           </ul>
           </div>`;
-    case formatTypes.xml:
-      return `<?xml version="1.0" encoding="UTF-8"?>
+});
+
+BooksView.addView(formatTypes.xml, (books) => {
+  return `<?xml version="1.0" encoding="UTF-8"?>
           <booklist>
             ${books.map((book) => {
               const { title, author, description, _id: id } = book;
@@ -69,8 +68,7 @@ const BooksView = (books, format) => {
                 <id>${id}</id>
               </book>`;
             })}
-        </booklist>`;
-  }
-};
+          </booklist>`;
+});
 
-module.exports = { BooksView, ViewFormats };
+module.exports = BooksView;

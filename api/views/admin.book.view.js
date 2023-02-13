@@ -1,34 +1,36 @@
 const formatTypes = require('../config/formatTypes');
+const ViewBuilder = require('./ViewFactory');
 
-const ViewFormats = [
-  formatTypes.json,
-  formatTypes.text,
-  formatTypes.html,
-  formatTypes.xml,
-];
+const BookView = new ViewBuilder();
 
-const BookView = (book, format) => {
+BookView.addView(formatTypes.json, (book) => {
   const { title, author, description, _id: id } = book;
 
-  switch (format) {
-    case formatTypes.json:
-      return {
-        data: {
-          title,
-          author,
-          description,
-          id,
-          links: {
-            href: '/books',
-            ref: 'books',
-            type: 'GET',
-          },
-        },
-      };
-    case formatTypes.text:
-      return `Title: ${title}, By: ${author}. Description: ${description}. ID: ${id}`;
-    case formatTypes.html:
-      return `<div>
+  return {
+    data: {
+      title,
+      author,
+      description,
+      id,
+      links: {
+        href: '/books',
+        ref: 'books',
+        type: 'GET',
+      },
+    },
+  };
+});
+
+BookView.addView(formatTypes.text, (book) => {
+  const { title, author, description, _id: id } = book;
+
+  return `Title: ${title}, By: ${author}. Description: ${description}. ID: ${id}`;
+});
+
+BookView.addView(formatTypes.html, (book) => {
+  const { title, author, description, _id: id } = book;
+
+  return `<div>
           <h1>Edit ${title}</h1>
           <h3>Id: ${id}</h3>
           <form
@@ -47,15 +49,18 @@ const BookView = (book, format) => {
             </div>
           </form>
         </div> `;
-    case formatTypes.xml:
-      return `<?xml version="1.0" encoding="UTF-8"?>
+});
+
+BookView.addView(formatTypes.xml, (book) => {
+  const { title, author, description, _id: id } = book;
+
+  return `<?xml version="1.0" encoding="UTF-8"?>
           <book>
             <title>${title}</title>
             <author>${author}</author>
             <description>${description}</description>
             <id>${id}</id>
           </book>`;
-  }
-};
+});
 
-module.exports = { BookView, ViewFormats };
+module.exports = BookView;
