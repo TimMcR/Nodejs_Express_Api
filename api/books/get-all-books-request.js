@@ -10,6 +10,10 @@ const getAllBooksRequest = expressAsyncHandler(async (req, res) => {
 
   const books = await Book.find({});
 
+  if (format === formatTypes.html) {
+    return res.render('books', { books });
+  }
+
   return res.status(200).type(format).send(view(books));
 });
 

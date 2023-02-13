@@ -1,0 +1,10 @@
+ul
+  each book in books
+    li
+      h2= book.title
+      h3 By: #{book.author}
+      p Description: #{book.description}
+      p ID:
+        a(href="http://localhost:4000/books/#{book._id}?format=html") #{book._id}
+
+//Error: book._id in link is breaking

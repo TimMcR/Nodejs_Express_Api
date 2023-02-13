@@ -1,0 +1,7 @@
+div
+  h1= book.title
+  h2 By #{book.author}
+  h3 Description: 
+  p= book.description
+  p Id: #{book._id}
+  a(href='http://localhost:4000/books?format=html') Back to Book Listing

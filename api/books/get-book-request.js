@@ -17,6 +17,10 @@ const getBookRequest = expressAsyncHandler(async (req, res) => {
     createHttpError(404, 'Book Not Found');
   }
 
+  if (format === formatTypes.html) {
+    return res.render('book', { book });
+  }
+
   return res.status(200).type(format).send(view(book));
 });
 

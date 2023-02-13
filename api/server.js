@@ -10,6 +10,8 @@ const adminRoutes = require('./admin/routes');
 const errorHandler = require('./middleware/errorHandler');
 
 const app = express();
+app.set('view engine', 'pug');
+app.set('views', './views-new');
 
 //middleware
 app.use(express.json());

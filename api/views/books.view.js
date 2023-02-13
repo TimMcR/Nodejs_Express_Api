@@ -1,7 +1,7 @@
 const formatTypes = require('../config/formatTypes');
 const ViewBuilder = require('./ViewBuilder');
 
-const BooksView = new ViewBuilder();
+const BooksView = new ViewBuilder(true);
 
 BooksView.addView(formatTypes.json, (books) => {
   return {
@@ -31,29 +31,6 @@ BooksView.addView(formatTypes.text, (books) => {
       }: ${title}. By ${author}. Description: ${description}. ID: ${id}`;
     })
     .toString();
-});
-
-BooksView.addView(formatTypes.html, (books) => {
-  return `
-          <div>
-            <ul>
-              ${books
-                .map((book) => {
-                  const { title, author, description, _id: id } = book;
-                  return `<li>
-                    <h2>${title}</h2>
-                    <h3>By: ${author}</h3>
-                    <p>Description: ${description}</p>
-                    <p>ID:
-                      <a href="http://localhost:4000/books/${id}?format=html">
-                        ${id}
-                      </a>
-                    </p>
-                  </li>`;
-                })
-                .join('')}
-          </ul>
-          </div>`;
 });
 
 BooksView.addView(formatTypes.xml, (books) => {

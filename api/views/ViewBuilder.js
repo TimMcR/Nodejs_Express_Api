@@ -1,33 +1,28 @@
-const View = require('./View');
-const createHttpError = require('http-errors');
+const formatTypes = require('../config/formatTypes');
+
+class View {
+  constructor(format, viewFn) {
+    this.format = format;
+    this.viewFn = viewFn;
+  }
+}
 
 class ViewBuilder {
-  Views;
-
-  constructor() {
-    this.Views = [];
+  constructor(hasHtmlView = false) {
+    if (hasHtmlView) this.Views = [new View(formatTypes.html, () => {})];
+    else this.Views = [];
   }
 
-  addView = function (format = '', viewFn = (entity) => any) {
+  addView = (format = '', viewFn = (entity) => any) => {
     this.Views.push(new View(format, viewFn));
   };
 
-  getView = function (format) {
-    let viewResult = null;
-    this.Views.forEach((view) => {
-      if (view.format === format) {
-        viewResult = view.viewFn;
-      }
-    });
+  getView = (format) => {
+    const view = this.Views.find((view) => view.format === format);
 
-    //TODO extract this to custom error
-    if (!viewResult)
-      throw createHttpError(
-        415,
-        `Content Type '${format}' is not supported for this request`,
-      );
+    if (!view) throw Error('Content type not supported');
 
-    return viewResult;
+    return view.viewFn;
   };
 }
 
