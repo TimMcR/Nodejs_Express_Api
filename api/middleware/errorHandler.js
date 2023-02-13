@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { isHttpError } = require('http-errors');
 
 const errorHandler = (err, req, res, next) => {
   console.log(`${err}`.red);
@@ -12,6 +13,14 @@ const errorHandler = (err, req, res, next) => {
         message: err.message,
       },
     });
+  }
+
+  if (err instanceof mongoose.Error.CastError) {
+    return res.status(404).send(`ID: ${err.value} is not valid`);
+  }
+
+  if (isHttpError(err)) {
+    return res.status(err.status).send(err.message);
   }
 
   //Unique Key Error

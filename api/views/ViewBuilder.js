@@ -1,4 +1,5 @@
 const View = require('./View');
+const createHttpError = require('http-errors');
 
 class ViewBuilder {
   Views;
@@ -20,7 +21,11 @@ class ViewBuilder {
     });
 
     //TODO extract this to custom error
-    if (!viewResult) throw Error('Format type not supported');
+    if (!viewResult)
+      throw createHttpError(
+        415,
+        `Content Type '${format}' is not supported for this request`,
+      );
 
     return viewResult;
   };

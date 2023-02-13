@@ -1,5 +1,5 @@
 const formatTypes = require('../config/formatTypes');
-const ViewBuilder = require('./ViewFactory');
+const ViewBuilder = require('./ViewBuilder');
 
 const BookView = new ViewBuilder();
 
